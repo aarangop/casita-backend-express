@@ -12,7 +12,7 @@ import logger from "morgan";
 import usersRouter from "./routes/user.route";
 import householdRouter from "./routes/household.route";
 
-export function configureEnv(env: string = "production"): void {
+export function configureEnv(): void {
     const logger = createLogger({
         level: "info",
         transports: [new winston.transports.Console()]
@@ -53,7 +53,7 @@ const pageNotFoundErrorMiddleware: RequestHandler = (req, res, next) => {
 // Catch 404 and forward to error handler
 app.use(pageNotFoundErrorMiddleware);
 
-const errorMiddleware: ErrorRequestHandler = (err, req, res, next) => {
+const errorMiddleware: ErrorRequestHandler = (err, req, res) => {
     // set locals, only providing error in development res.locals.message = err.message
     res.locals.error = req.app.get('env') === 'development' ? err : {};
 

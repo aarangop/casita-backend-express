@@ -1,4 +1,4 @@
-import {NextFunction, Request, Response} from "express";
+import {Request, Response} from "express";
 import User, {IUser} from "../models/user.model";
 import expressAsyncHandler from "express-async-handler";
 import winston from "winston";
@@ -8,7 +8,7 @@ const logger = winston.createLogger({
     transports: [new winston.transports.Console()]
 })
 
-export const getAllUsers = expressAsyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+export const getAllUsers = expressAsyncHandler(async (req: Request, res: Response) => {
     try {
         const users = await User.find();
         res.status(200).json(users)
@@ -18,7 +18,7 @@ export const getAllUsers = expressAsyncHandler(async (req: Request, res: Respons
     }
 });
 
-export const createUser = expressAsyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+export const createUser = expressAsyncHandler(async (req: Request, res: Response) => {
     try {
         const user = req.body as IUser;
 

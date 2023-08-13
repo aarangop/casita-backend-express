@@ -3,7 +3,7 @@ import app, {configureEnv, getDbUri} from "../../src/app"
 import mongoose from "mongoose";
 import winston, {createLogger} from "winston";
 
-configureEnv(process.env.NODE_ENV);
+configureEnv();
 
 const logger = createLogger({
     level: "info",
