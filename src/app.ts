@@ -1,21 +1,35 @@
 import express, {ErrorRequestHandler, RequestHandler} from "express";
 import "dotenv/config"
-import logger from "morgan";
 import path from "path";
 import cookieParser from "cookie-parser";
 import indexRouter from "./routes/index";
-import usersRouter from "./routes/users";
+import usersRouter from "./routes/user.route";
 import createError from "http-errors";
 import {json} from "body-parser";
 import {configDotenv} from "dotenv";
-import mongoose from "mongoose";
+import winston, {createLogger} from "winston";
+import logger from "morgan";
 
-configDotenv()
+export function configureEnv(env: string = "production"): void {
+    const logger = createLogger({
+        level: "info",
+        transports: [new winston.transports.Console()]
+    })
+    // Configure environment
+    const configEnvPath = process.env.NODE_ENV === "production" ? "./config/.env" : `./config/.env.${process.env.NODE_ENV}`;
+    configDotenv({
+        path: configEnvPath
+    });
+    logger.info(`Configured environment from file ${configEnvPath}`)
+}
+
+export function getDbUri(): string {
+    return process.env.DB_URI || "mongo://localhost:27027"
+}
 
 const app = express();
-const port = process.env.PORT || 3000
-const dbUri = process.env.DB_URI || "localhost:27127";
-// view engine setup
+
+// View engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
@@ -26,17 +40,11 @@ app.use(cookieParser())
 app.use(express.static(path.join(__dirname, '../public')));
 app.use(json())
 
+// Set up routers
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/user', usersRouter);
 
-app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`)
-})
-
-mongoose.connect(dbUri).then(() => {
-    console.log("Connected to database")
-})
-
+// Set up error handlers
 const pageNotFoundErrorMiddleware: RequestHandler = (req, res, next) => {
     next(createError(404));
 }
@@ -54,5 +62,4 @@ const errorMiddleware: ErrorRequestHandler = (err, req, res, next) => {
 
 app.use(errorMiddleware);
 
-
-export default {app}
+export default app
