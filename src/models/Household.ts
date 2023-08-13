@@ -1,14 +1,26 @@
-import mongoose from "mongoose"
+import mongoose, {Document, Schema} from "mongoose"
 import {IUser} from "./user.model";
 
-const Schema = mongoose.Schema;
 
-interface IHousehold {
+interface IHousehold extends Document {
     name: string;
     members: IUser[];
+    address: string;
+    postalCode?: string;
+    city: string;
+    country: string;
+    current: boolean;
 }
 
-const HouseholdSchema = new Schema({
+const householdSchema = new Schema({
     name: String,
-    members: [{type: Schema.Types.ObjectId, ref: 'User'}]
+    members: [{type: Schema.Types.ObjectId, ref: 'User'}],
+    address: {type: String, required: true},
+    postalCode: {type: String, required: false},
+    city: {type: String, required: true},
+    country: {type: String, required: true},
+    current: {type: Boolean, default: true}
 })
+
+const Household = mongoose.model<IHousehold>("Household", householdSchema)
+export default Household

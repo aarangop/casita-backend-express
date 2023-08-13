@@ -2,13 +2,15 @@ import express, {ErrorRequestHandler, RequestHandler} from "express";
 import "dotenv/config"
 import path from "path";
 import cookieParser from "cookie-parser";
-import indexRouter from "./routes/index";
-import usersRouter from "./routes/user.route";
 import createError from "http-errors";
 import {json} from "body-parser";
 import {configDotenv} from "dotenv";
 import winston, {createLogger} from "winston";
 import logger from "morgan";
+
+// Import routers
+import usersRouter from "./routes/user.route";
+import householdRouter from "./routes/household.route";
 
 export function configureEnv(env: string = "production"): void {
     const logger = createLogger({
@@ -41,8 +43,8 @@ app.use(express.static(path.join(__dirname, '../public')));
 app.use(json())
 
 // Set up routers
-app.use('/', indexRouter);
 app.use('/user', usersRouter);
+app.use("/household", householdRouter);
 
 // Set up error handlers
 const pageNotFoundErrorMiddleware: RequestHandler = (req, res, next) => {
