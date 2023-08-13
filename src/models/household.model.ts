@@ -22,5 +22,5 @@ const householdSchema = new Schema({
     current: {type: Boolean, default: true}
 })
 
-const Household = mongoose.model<IHousehold>("Household", householdSchema)
-export default Household
+const HouseholdModel = mongoose.model<IHousehold>("HouseholdModel", householdSchema)
+export default HouseholdModel
